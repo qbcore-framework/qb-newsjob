@@ -110,7 +110,7 @@ Citizen.CreateThread(function()
                         end
     
                         SetEntityCoords(PlayerPedId(), Config.Locations["inside"].coords.x, Config.Locations["inside"].coords.y, Config.Locations["inside"].coords.z, 0, 0, 0, false)
-                        SetEntityHeading(PlayerPedId(), Config.Locations["inside"].coords.h)
+                        SetEntityHeading(PlayerPedId(), Config.Locations["inside"].coords.w)
     
                         Citizen.Wait(100)
     
@@ -125,7 +125,7 @@ Citizen.CreateThread(function()
                         end
     
                         SetEntityCoords(PlayerPedId(), Config.Locations["outside"].coords.x, Config.Locations["outside"].coords.y, Config.Locations["outside"].coords.z, 0, 0, 0, false)
-                        SetEntityHeading(PlayerPedId(), Config.Locations["outside"].coords.h)
+                        SetEntityHeading(PlayerPedId(), Config.Locations["outside"].coords.w)
     
                         Citizen.Wait(100)
     
@@ -163,7 +163,7 @@ function TakeOutVehicle(vehicleInfo)
     local coords = Config.Locations["vehicle"].coords
     QBCore.Functions.SpawnVehicle(vehicleInfo, function(veh)
         SetVehicleNumberPlateText(veh, "TOWR"..tostring(math.random(1000, 9999)))
-        SetEntityHeading(veh, coords.h)
+        SetEntityHeading(veh, coords.w)
         exports['LegacyFuel']:SetFuel(veh, 100.0)
         closeMenuFull()
         TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
