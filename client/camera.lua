@@ -427,8 +427,8 @@ Citizen.CreateThread(function()
 			end
 
 			if not IsEntityPlayingAnim(PlayerPedId(), bmicanimDict, bmicanimName, 3) then
-				TaskPlayAnim(GetPlayerPed(PlayerId()), 1.0, -1, -1, 50, 0, 0, 0, 0) -- 50 = 32 + 16 + 2
-				TaskPlayAnim(GetPlayerPed(PlayerId()), bmicanimDict, bmicanimName, 1.0, -1, -1, 50, 0, 0, 0, 0)
+				TaskPlayAnim(PlayerPedId(), 1.0, -1, -1, 50, 0, 0, 0, 0) -- 50 = 32 + 16 + 2
+				TaskPlayAnim(PlayerPedId(), bmicanimDict, bmicanimName, 1.0, -1, -1, 50, 0, 0, 0, 0)
 			end
 			
 			DisablePlayerFiring(PlayerId(), true)
@@ -437,7 +437,7 @@ Citizen.CreateThread(function()
 			DisableControlAction(0,37,true) -- INPUT_SELECT_WEAPON
 			SetCurrentPedWeapon(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), true)
 			
-			if (IsPedInAnyVehicle(PlayerPedId(), -1) and GetPedVehicleSeat(PlayerPedId()) == -1) or IsPedCuffed(PlayerPedId()) or holdingMic then
+			if IsPedInAnyVehicle(PlayerPedId(), false) or IsHandcuffed or holdingMic then
 				ClearPedSecondaryTask(PlayerPedId())
 				DetachEntity(NetToObj(bmic_net), 1, 1)
 				DeleteEntity(NetToObj(bmic_net))
@@ -448,6 +448,7 @@ Citizen.CreateThread(function()
 		end
 	end
 end)
+
 
 
 function drawRct(x,y,width,height,r,g,b,a)
