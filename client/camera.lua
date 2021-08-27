@@ -435,9 +435,9 @@ Citizen.CreateThread(function()
 			DisableControlAction(0,25,true) -- disable aim
 			DisableControlAction(0, 44,  true) -- INPUT_COVER
 			DisableControlAction(0,37,true) -- INPUT_SELECT_WEAPON
-			SetCurrentPedWeapon(GetPlayerPed(-1), GetHashKey("WEAPON_UNARMED"), true)
+			SetCurrentPedWeapon(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), true)
 			
-			if (IsPedInAnyVehicle(GetPlayerPed(-1), -1) and GetPedVehicleSeat(PlayerPedId()) == -1) or IsPedCuffed(PlayerPedId()) or holdingMic then
+			if (IsPedInAnyVehicle(PlayerPedId(), -1) and GetPedVehicleSeat(PlayerPedId()) == -1) or IsPedCuffed(PlayerPedId()) or holdingMic then
 				ClearPedSecondaryTask(PlayerPedId())
 				DetachEntity(NetToObj(bmic_net), 1, 1)
 				DeleteEntity(NetToObj(bmic_net))
