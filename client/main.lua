@@ -1,4 +1,4 @@
-isLoggedIn = false
+local isLoggedIn = false
 local PlayerJob = {}
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
