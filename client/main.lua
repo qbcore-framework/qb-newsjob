@@ -1,4 +1,4 @@
-isLoggedIn = false
+local isLoggedIn = false
 local PlayerJob = {}
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
@@ -42,15 +42,6 @@ AddEventHandler('QBCore:Client:OnJobUpdate', function(JobInfo)
 end)
 
 Citizen.CreateThread(function()
-    -- local blip = AddBlipForCoord(Config.Locations["main"].coords.x, Config.Locations["main"].coords.y, Config.Locations["main"].coords.z)
-    -- SetBlipSprite(blip, 459)
-    -- SetBlipDisplay(blip, 4)
-    -- SetBlipScale(blip, 0.6)
-    -- SetBlipAsShortRange(blip, true)
-    -- SetBlipColour(blip, 1)
-    -- BeginTextCommandSetBlipName("STRING")
-    -- AddTextComponentSubstringPlayerName(Config.Locations["main"].label)
-    -- EndTextCommandSetBlipName(blip)
     while true do 
         Citizen.Wait(1)
         if isLoggedIn and QBCore ~= nil then
