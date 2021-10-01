@@ -18,8 +18,8 @@ local UI = {
 ---------------------------------------------------------------------------
 -- Toggling Cam --
 ---------------------------------------------------------------------------
-RegisterNetEvent("Cam:ToggleCam")
-AddEventHandler("Cam:ToggleCam", function()
+
+RegisterNetEvent("Cam:ToggleCam", function()
     if not holdingCam then
         RequestModel(GetHashKey(camModel))
         while not HasModelLoaded(GetHashKey(camModel)) do
@@ -51,23 +51,27 @@ end)
 
 Citizen.CreateThread(function()
 	while true do
-		Citizen.Wait(0)
-		if holdingCam then
-			while not HasAnimDictLoaded(camanimDict) do
-				RequestAnimDict(camanimDict)
-				Citizen.Wait(100)
-			end
+		if PlayerJob.name == "reporter" then
+			if holdingCam then
+				while not HasAnimDictLoaded(camanimDict) do
+					RequestAnimDict(camanimDict)
+					Citizen.Wait(100)
+				end
 
-			if not IsEntityPlayingAnim(PlayerPedId(), camanimDict, camanimName, 3) then
-				TaskPlayAnim(GetPlayerPed(PlayerId()), 1.0, -1, -1, 50, 0, 0, 0, 0) -- 50 = 32 + 16 + 2
-				TaskPlayAnim(GetPlayerPed(PlayerId()), camanimDict, camanimName, 1.0, -1, -1, 50, 0, 0, 0, 0)
+				if not IsEntityPlayingAnim(PlayerPedId(), camanimDict, camanimName, 3) then
+					TaskPlayAnim(GetPlayerPed(PlayerId()), 1.0, -1, -1, 50, 0, 0, 0, 0) -- 50 = 32 + 16 + 2
+					TaskPlayAnim(GetPlayerPed(PlayerId()), camanimDict, camanimName, 1.0, -1, -1, 50, 0, 0, 0, 0)
+				end
+					
+				DisablePlayerFiring(PlayerId(), true)
+				DisableControlAction(0,25,true) -- disable aim
+				DisableControlAction(0, 44,  true) -- INPUT_COVER
+				DisableControlAction(0,37,true) -- INPUT_SELECT_WEAPON
+				SetCurrentPedWeapon(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), true)
 			end
-				
-			DisablePlayerFiring(PlayerId(), true)
-			DisableControlAction(0,25,true) -- disable aim
-			DisableControlAction(0, 44,  true) -- INPUT_COVER
-			DisableControlAction(0,37,true) -- INPUT_SELECT_WEAPON
-			SetCurrentPedWeapon(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), true)
+			Citizen.Wait(7)
+		else
+			Citizen.Wait(1000)
 		end
 	end
 end)
@@ -91,85 +95,86 @@ local fov = (fov_max+fov_min)*0.5
 
 Citizen.CreateThread(function()
 	while true do
-
-		Citizen.Wait(1)
-
 		local lPed = PlayerPedId()
 		local vehicle = GetVehiclePedIsIn(lPed)
+		if PlayerJob.name == "reporter" then
+			if holdingCam and IsControlJustReleased(1, 244) then
+				movcamera = true
 
-		if holdingCam and IsControlJustReleased(1, 244) then
-			movcamera = true
+				SetTimecycleModifier("default")
 
-			SetTimecycleModifier("default")
+				SetTimecycleModifierStrength(0.3)
+				
+				local scaleform = RequestScaleformMovie("security_camera")
 
-			SetTimecycleModifierStrength(0.3)
-			
-			local scaleform = RequestScaleformMovie("security_camera")
+				while not HasScaleformMovieLoaded(scaleform) do
+					Citizen.Wait(10)
+				end
 
-			while not HasScaleformMovieLoaded(scaleform) do
-				Citizen.Wait(10)
+
+				local lPed = PlayerPedId()
+				local vehicle = GetVehiclePedIsIn(lPed)
+				local cam1 = CreateCam("DEFAULT_SCRIPTED_FLY_CAMERA", true)
+
+				AttachCamToEntity(cam1, lPed, 0.0,0.0,1.0, true)
+				SetCamRot(cam1, 2.0,1.0,GetEntityHeading(lPed))
+				SetCamFov(cam1, fov)
+				RenderScriptCams(true, false, 0, 1, 0)
+				PushScaleformMovieFunction(scaleform, "security_camera")
+				PopScaleformMovieFunctionVoid()
+
+				while movcamera and not IsEntityDead(lPed) and (GetVehiclePedIsIn(lPed) == vehicle) and true do
+					if IsControlJustPressed(0, 177) then
+						PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", false)
+						movcamera = false
+					end
+					
+					SetEntityRotation(lPed, 0, 0, new_z,2, true)
+
+					local zoomvalue = (1.0/(fov_max-fov_min))*(fov-fov_min)
+					CheckInputRotation(cam1, zoomvalue)
+
+					HandleZoom(cam1)
+					HideHUDThisFrame()
+
+					drawRct(UI.x + 0.0, 	UI.y + 0.0, 1.0,0.15,0,0,0,255) -- Top Bar
+					DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
+					drawRct(UI.x + 0.0, 	UI.y + 0.85, 1.0,0.16,0,0,0,255) -- Bottom Bar
+					
+					local camHeading = GetGameplayCamRelativeHeading()
+					local camPitch = GetGameplayCamRelativePitch()
+					if camPitch < -70.0 then
+						camPitch = -70.0
+					elseif camPitch > 42.0 then
+						camPitch = 42.0
+					end
+					camPitch = (camPitch + 70.0) / 112.0
+					
+					if camHeading < -180.0 then
+						camHeading = -180.0
+					elseif camHeading > 180.0 then
+						camHeading = 180.0
+					end
+					camHeading = (camHeading + 180.0) / 360.0
+					
+					Citizen.InvokeNative(0xD5BB4025AE449A4E, PlayerPedId(), "Pitch", camPitch)
+					Citizen.InvokeNative(0xD5BB4025AE449A4E, PlayerPedId(), "Heading", camHeading * -1.0 + 1.0)
+					
+					Citizen.Wait(1)
+				end
+
+				movcamera = false
+				ClearTimecycleModifier()
+				fov = (fov_max+fov_min)*0.5
+				RenderScriptCams(false, false, 0, 1, 0)
+				SetScaleformMovieAsNoLongerNeeded(scaleform)
+				DestroyCam(cam1, false)
+				SetNightvision(false)
+				SetSeethrough(false)
 			end
-
-
-			local lPed = PlayerPedId()
-			local vehicle = GetVehiclePedIsIn(lPed)
-			local cam1 = CreateCam("DEFAULT_SCRIPTED_FLY_CAMERA", true)
-
-			AttachCamToEntity(cam1, lPed, 0.0,0.0,1.0, true)
-			SetCamRot(cam1, 2.0,1.0,GetEntityHeading(lPed))
-			SetCamFov(cam1, fov)
-			RenderScriptCams(true, false, 0, 1, 0)
-			PushScaleformMovieFunction(scaleform, "security_camera")
-			PopScaleformMovieFunctionVoid()
-
-			while movcamera and not IsEntityDead(lPed) and (GetVehiclePedIsIn(lPed) == vehicle) and true do
-				if IsControlJustPressed(0, 177) then
-					PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", false)
-					movcamera = false
-				end
-				
-				SetEntityRotation(lPed, 0, 0, new_z,2, true)
-
-				local zoomvalue = (1.0/(fov_max-fov_min))*(fov-fov_min)
-				CheckInputRotation(cam1, zoomvalue)
-
-				HandleZoom(cam1)
-				HideHUDThisFrame()
-
-				drawRct(UI.x + 0.0, 	UI.y + 0.0, 1.0,0.15,0,0,0,255) -- Top Bar
-				DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
-				drawRct(UI.x + 0.0, 	UI.y + 0.85, 1.0,0.16,0,0,0,255) -- Bottom Bar
-				
-				local camHeading = GetGameplayCamRelativeHeading()
-				local camPitch = GetGameplayCamRelativePitch()
-				if camPitch < -70.0 then
-					camPitch = -70.0
-				elseif camPitch > 42.0 then
-					camPitch = 42.0
-				end
-				camPitch = (camPitch + 70.0) / 112.0
-				
-				if camHeading < -180.0 then
-					camHeading = -180.0
-				elseif camHeading > 180.0 then
-					camHeading = 180.0
-				end
-				camHeading = (camHeading + 180.0) / 360.0
-				
-				Citizen.InvokeNative(0xD5BB4025AE449A4E, PlayerPedId(), "Pitch", camPitch)
-				Citizen.InvokeNative(0xD5BB4025AE449A4E, PlayerPedId(), "Heading", camHeading * -1.0 + 1.0)
-				
-				Citizen.Wait(1)
-			end
-
-			movcamera = false
-			ClearTimecycleModifier()
-			fov = (fov_max+fov_min)*0.5
-			RenderScriptCams(false, false, 0, 1, 0)
-			SetScaleformMovieAsNoLongerNeeded(scaleform)
-			DestroyCam(cam1, false)
-			SetNightvision(false)
-			SetSeethrough(false)
+			Citizen.Wait(7)
+		else
+			Citizen.Wait(1000)
 		end
 	end
 end)
@@ -180,91 +185,93 @@ end)
 
 Citizen.CreateThread(function()
 	while true do
-
-		Citizen.Wait(1)
-
 		local lPed = PlayerPedId()
 		local vehicle = GetVehiclePedIsIn(lPed)
 
-		if holdingCam and IsControlJustReleased(1, 38) then
-			newscamera = true
+		if PlayerJob.name == "reporter" then
+			if holdingCam and IsControlJustReleased(1, 38) then
+				newscamera = true
 
-			SetTimecycleModifier("default")
+				SetTimecycleModifier("default")
 
-			SetTimecycleModifierStrength(0.3)
-			
-			local scaleform = RequestScaleformMovie("security_camera")
-			local scaleform2 = RequestScaleformMovie("breaking_news")
-
-
-			while not HasScaleformMovieLoaded(scaleform) do
-				Citizen.Wait(10)
-			end
-			while not HasScaleformMovieLoaded(scaleform2) do
-				Citizen.Wait(10)
-			end
+				SetTimecycleModifierStrength(0.3)
+				
+				local scaleform = RequestScaleformMovie("security_camera")
+				local scaleform2 = RequestScaleformMovie("breaking_news")
 
 
-			local lPed = PlayerPedId()
-			local vehicle = GetVehiclePedIsIn(lPed)
-			local cam2 = CreateCam("DEFAULT_SCRIPTED_FLY_CAMERA", true)
-
-			AttachCamToEntity(cam2, lPed, 0.0,0.0,1.0, true)
-			SetCamRot(cam2, 2.0,1.0,GetEntityHeading(lPed))
-			SetCamFov(cam2, fov)
-			RenderScriptCams(true, false, 0, 1, 0)
-			PushScaleformMovieFunction(scaleform, "SET_CAM_LOGO")
-			PushScaleformMovieFunction(scaleform2, "breaking_news")
-			PopScaleformMovieFunctionVoid()
-
-			while newscamera and not IsEntityDead(lPed) and (GetVehiclePedIsIn(lPed) == vehicle) and true do
-				if IsControlJustPressed(1, 177) then
-					PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", false)
-					newscamera = false
+				while not HasScaleformMovieLoaded(scaleform) do
+					Citizen.Wait(10)
+				end
+				while not HasScaleformMovieLoaded(scaleform2) do
+					Citizen.Wait(10)
 				end
 
-				SetEntityRotation(lPed, 0, 0, new_z,2, true)
+
+				local lPed = PlayerPedId()
+				local vehicle = GetVehiclePedIsIn(lPed)
+				local cam2 = CreateCam("DEFAULT_SCRIPTED_FLY_CAMERA", true)
+
+				AttachCamToEntity(cam2, lPed, 0.0,0.0,1.0, true)
+				SetCamRot(cam2, 2.0,1.0,GetEntityHeading(lPed))
+				SetCamFov(cam2, fov)
+				RenderScriptCams(true, false, 0, 1, 0)
+				PushScaleformMovieFunction(scaleform, "SET_CAM_LOGO")
+				PushScaleformMovieFunction(scaleform2, "breaking_news")
+				PopScaleformMovieFunctionVoid()
+
+				while newscamera and not IsEntityDead(lPed) and (GetVehiclePedIsIn(lPed) == vehicle) and true do
+					if IsControlJustPressed(1, 177) then
+						PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", false)
+						newscamera = false
+					end
+
+					SetEntityRotation(lPed, 0, 0, new_z,2, true)
+						
+					local zoomvalue = (1.0/(fov_max-fov_min))*(fov-fov_min)
+					CheckInputRotation(cam2, zoomvalue)
+
+					HandleZoom(cam2)
+					HideHUDThisFrame()
+
+					DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
+					DrawScaleformMovie(scaleform2, 0.5, 0.63, 1.0, 1.0, 255, 255, 255, 255)
+					Breaking("BREAKING NEWS")
 					
-				local zoomvalue = (1.0/(fov_max-fov_min))*(fov-fov_min)
-				CheckInputRotation(cam2, zoomvalue)
-
-				HandleZoom(cam2)
-				HideHUDThisFrame()
-
-				DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
-				DrawScaleformMovie(scaleform2, 0.5, 0.63, 1.0, 1.0, 255, 255, 255, 255)
-				Breaking("BREAKING NEWS")
-				
-				local camHeading = GetGameplayCamRelativeHeading()
-				local camPitch = GetGameplayCamRelativePitch()
-				if camPitch < -70.0 then
-					camPitch = -70.0
-				elseif camPitch > 42.0 then
-					camPitch = 42.0
+					local camHeading = GetGameplayCamRelativeHeading()
+					local camPitch = GetGameplayCamRelativePitch()
+					if camPitch < -70.0 then
+						camPitch = -70.0
+					elseif camPitch > 42.0 then
+						camPitch = 42.0
+					end
+					camPitch = (camPitch + 70.0) / 112.0
+					
+					if camHeading < -180.0 then
+						camHeading = -180.0
+					elseif camHeading > 180.0 then
+						camHeading = 180.0
+					end
+					camHeading = (camHeading + 180.0) / 360.0
+					
+					Citizen.InvokeNative(0xD5BB4025AE449A4E, PlayerPedId(), "Pitch", camPitch)
+					Citizen.InvokeNative(0xD5BB4025AE449A4E, PlayerPedId(), "Heading", camHeading * -1.0 + 1.0)
+					
+					Citizen.Wait(1)
 				end
-				camPitch = (camPitch + 70.0) / 112.0
-				
-				if camHeading < -180.0 then
-					camHeading = -180.0
-				elseif camHeading > 180.0 then
-					camHeading = 180.0
-				end
-				camHeading = (camHeading + 180.0) / 360.0
-				
-				Citizen.InvokeNative(0xD5BB4025AE449A4E, PlayerPedId(), "Pitch", camPitch)
-				Citizen.InvokeNative(0xD5BB4025AE449A4E, PlayerPedId(), "Heading", camHeading * -1.0 + 1.0)
-				
-				Citizen.Wait(1)
+
+				newscamera = false
+				ClearTimecycleModifier()
+				fov = (fov_max+fov_min)*0.5
+				RenderScriptCams(false, false, 0, 1, 0)
+				SetScaleformMovieAsNoLongerNeeded(scaleform)
+				DestroyCam(cam2, false)
+				SetNightvision(false)
+				SetSeethrough(false)
 			end
-
-			newscamera = false
-			ClearTimecycleModifier()
-			fov = (fov_max+fov_min)*0.5
-			RenderScriptCams(false, false, 0, 1, 0)
-			SetScaleformMovieAsNoLongerNeeded(scaleform)
-			DestroyCam(cam2, false)
-			SetNightvision(false)
-			SetSeethrough(false)
+			Citizen.Wait(7)
+		else
+			Citizen.Wait(1000)
 		end
 	end
 end)
@@ -274,8 +281,7 @@ end)
 ---------------------------------------------------------------------------
 
 -- Activate camera
-RegisterNetEvent('camera:Activate')
-AddEventHandler('camera:Activate', function()
+RegisterNetEvent('camera:Activate', function()
 	camera = not camera
 end)
 
@@ -344,8 +350,7 @@ end
 ---------------------------------------------------------------------------
 -- Toggling Mic --
 ---------------------------------------------------------------------------
-RegisterNetEvent("Mic:ToggleMic")
-AddEventHandler("Mic:ToggleMic", function()
+RegisterNetEvent("Mic:ToggleMic", function()
     if not holdingMic then
         RequestModel(GetHashKey(micModel))
         while not HasModelLoaded(GetHashKey(micModel)) do
