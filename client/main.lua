@@ -119,7 +119,7 @@ Citizen.CreateThread(function()
     end
 end)
 
-function MenuGarage()
+local function MenuGarage()
     ped = PlayerPedId();
     MenuTitle = "Garage"
     ClearMenu()
@@ -127,7 +127,7 @@ function MenuGarage()
     Menu.addButton("Close Menu", "closeMenuFull", nil) 
 end
 
-function VehicleList(isDown)
+local function VehicleList(isDown)
     ped = PlayerPedId();
     MenuTitle = "Vehicles:"
     ClearMenu()
@@ -138,7 +138,7 @@ function VehicleList(isDown)
     Menu.addButton("Back", "MenuGarage",nil)
 end
 
-function TakeOutVehicle(vehicleInfo)
+local function TakeOutVehicle(vehicleInfo)
     local coords = Config.Locations["vehicle"].coords
     QBCore.Functions.SpawnVehicle(vehicleInfo, function(veh)
         SetVehicleNumberPlateText(veh, "TOWR"..tostring(math.random(1000, 9999)))
@@ -152,13 +152,13 @@ function TakeOutVehicle(vehicleInfo)
     end, coords, true)
 end
 
-function closeMenuFull()
+local function closeMenuFull()
     Menu.hidden = true
     currentGarage = nil
     ClearMenu()
 end
 
-function DrawText3D(x, y, z, text)
+local function DrawText3D(x, y, z, text)
 	SetTextScale(0.35, 0.35)
     SetTextFont(4)
     SetTextProportional(1)

@@ -373,7 +373,7 @@ RegisterNetEvent('camera:Activate', function()
 end)
 
 --FUNCTIONS--
-function HideHUDThisFrame()
+local function HideHUDThisFrame()
 	HideHelpTextThisFrame()
 	HideHudAndRadarThisFrame()
 	HideHudComponentThisFrame(1)
@@ -392,7 +392,7 @@ function HideHUDThisFrame()
 	HideHudComponentThisFrame(19)
 end
 
-function CheckInputRotation(cam, zoomvalue)
+local function CheckInputRotation(cam, zoomvalue)
 	local rightAxisX = GetDisabledControlNormal(0, 220)
 	local rightAxisY = GetDisabledControlNormal(0, 221)
 	local rotation = GetCamRot(cam, 2)
@@ -403,7 +403,7 @@ function CheckInputRotation(cam, zoomvalue)
 	end
 end
 
-function HandleZoom(cam)
+local function HandleZoom(cam)
 	local lPed = PlayerPedId()
 	if not ( IsPedSittingInAnyVehicle( lPed ) ) then
 
@@ -471,11 +471,11 @@ RegisterNetEvent("Mic:ToggleMic", function()
     end
 end)
 
-function drawRct(x,y,width,height,r,g,b,a)
+local function drawRct(x,y,width,height,r,g,b,a)
 	DrawRect(x + width/2, y + height/2, width, height, r, g, b, a)
 end
 
-function Breaking(text)
+local function Breaking(text)
 		SetTextColour(255, 255, 255, 255)
 		SetTextFont(8)
 		SetTextScale(1.2, 1.2)
@@ -488,7 +488,7 @@ function Breaking(text)
 		DrawText(0.2, 0.85)
 end
 
-function DisplayNotification(string)
+local function DisplayNotification(string)
 	SetTextComponentFormat("STRING")
 	AddTextComponentString(string)
     DisplayHelpTextFromStringLabel(0, 0, 1, -1)
