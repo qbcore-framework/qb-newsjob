@@ -1,6 +1,21 @@
 local isLoggedIn = false
 PlayerJob = {}
 
+local function DrawText3D(x, y, z, text)
+	SetTextScale(0.35, 0.35)
+    SetTextFont(4)
+    SetTextProportional(1)
+    SetTextColour(255, 255, 255, 215)
+    SetTextEntry("STRING")
+    SetTextCentre(true)
+    AddTextComponentString(text)
+    SetDrawOrigin(x,y,z, 0)
+    DrawText(0.0, 0.0)
+    local factor = (string.len(text)) / 370
+    DrawRect(0.0, 0.0+0.0125, 0.017+ factor, 0.03, 0, 0, 0, 75)
+    ClearDrawOrigin()
+end
+
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     isLoggedIn = true
     PlayerJob = QBCore.Functions.GetPlayerData().job
@@ -119,7 +134,7 @@ Citizen.CreateThread(function()
     end
 end)
 
-local function MenuGarage()
+function MenuGarage()
     ped = PlayerPedId();
     MenuTitle = "Garage"
     ClearMenu()
@@ -127,7 +142,7 @@ local function MenuGarage()
     Menu.addButton("Close Menu", "closeMenuFull", nil) 
 end
 
-local function VehicleList(isDown)
+function VehicleList(isDown)
     ped = PlayerPedId();
     MenuTitle = "Vehicles:"
     ClearMenu()
@@ -138,7 +153,7 @@ local function VehicleList(isDown)
     Menu.addButton("Back", "MenuGarage",nil)
 end
 
-local function TakeOutVehicle(vehicleInfo)
+function TakeOutVehicle(vehicleInfo)
     local coords = Config.Locations["vehicle"].coords
     QBCore.Functions.SpawnVehicle(vehicleInfo, function(veh)
         SetVehicleNumberPlateText(veh, "TOWR"..tostring(math.random(1000, 9999)))
@@ -152,23 +167,10 @@ local function TakeOutVehicle(vehicleInfo)
     end, coords, true)
 end
 
-local function closeMenuFull()
+function closeMenuFull()
     Menu.hidden = true
     currentGarage = nil
     ClearMenu()
 end
 
-local function DrawText3D(x, y, z, text)
-	SetTextScale(0.35, 0.35)
-    SetTextFont(4)
-    SetTextProportional(1)
-    SetTextColour(255, 255, 255, 215)
-    SetTextEntry("STRING")
-    SetTextCentre(true)
-    AddTextComponentString(text)
-    SetDrawOrigin(x,y,z, 0)
-    DrawText(0.0, 0.0)
-    local factor = (string.len(text)) / 370
-    DrawRect(0.0, 0.0+0.0125, 0.017+ factor, 0.03, 0, 0, 0, 75)
-    ClearDrawOrigin()
-end
+
