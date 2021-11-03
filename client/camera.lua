@@ -352,9 +352,9 @@ Citizen.CreateThread(function()
 							camHeading = 180.0
 						end
 						camHeading = (camHeading + 180.0) / 360.0
-						
-						Citizen.InvokeNative(0xD5BB4025AE449A4E, PlayerPedId(), "Pitch", camPitch)
-						Citizen.InvokeNative(0xD5BB4025AE449A4E, PlayerPedId(), "Heading", camHeading * -1.0 + 1.0)
+							
+						SetTaskMoveNetworkSignalFloat (PlayerPedId(), "Pitch", camPitch)
+						SetTaskMoveNetworkSignalFloat (PlayerPedId(), "Heading", camHeading * -1.0 + 1.0)
 						
 						Citizen.Wait(1)
 					end
