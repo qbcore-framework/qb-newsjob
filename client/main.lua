@@ -1,4 +1,3 @@
-local isLoggedIn = false
 PlayerJob = {}
 
 local function DrawText3D(x, y, z, text)
@@ -17,7 +16,6 @@ local function DrawText3D(x, y, z, text)
 end
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    isLoggedIn = true
     PlayerJob = QBCore.Functions.GetPlayerData().job
 
     if PlayerJob.name == "reporter" then
@@ -33,9 +31,9 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     end
 end)
 
-RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
-    isLoggedIn = false
-end)
+--RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
+    --isLoggedIn = false
+--end)
 
 RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
     PlayerJob = JobInfo
@@ -56,7 +54,7 @@ end)
 Citizen.CreateThread(function()
     while true do 
         Citizen.Wait(1)
-        if isLoggedIn and QBCore ~= nil then
+        if LocalPlayer.state.isLoggedIn then
             local pos = GetEntityCoords(PlayerPedId())
             if PlayerJob.name == "reporter" then
                 if #(pos - vector3(Config.Locations["vehicle"].coords.x, Config.Locations["vehicle"].coords.y, Config.Locations["vehicle"].coords.z)) < 10.0 then
@@ -91,7 +89,7 @@ Citizen.CreateThread(function()
     while true do 
         Citizen.Wait(1)
         local inRange = false
-        if isLoggedIn and QBCore ~= nil then
+        if LocalPlayer.state.isLoggedIn then
             local pos = GetEntityCoords(PlayerPedId())
             if #(pos - vector3(Config.Locations["main"].coords.x, Config.Locations["main"].coords.y, Config.Locations["main"].coords.z)) < 1.5 or #(pos - vector3(Config.Locations["inside"].coords.x, Config.Locations["inside"].coords.y, Config.Locations["inside"].coords.z)) < 1.5 then
                 inRange = true
