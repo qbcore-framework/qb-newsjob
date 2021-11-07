@@ -1,9 +1,21 @@
-local isLoggedIn = false
-local PlayerJob = {}
+PlayerJob = {}
 
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
-AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
-    isLoggedIn = true
+local function DrawText3D(x, y, z, text)
+	SetTextScale(0.35, 0.35)
+    SetTextFont(4)
+    SetTextProportional(1)
+    SetTextColour(255, 255, 255, 215)
+    SetTextEntry("STRING")
+    SetTextCentre(true)
+    AddTextComponentString(text)
+    SetDrawOrigin(x,y,z, 0)
+    DrawText(0.0, 0.0)
+    local factor = (string.len(text)) / 370
+    DrawRect(0.0, 0.0+0.0125, 0.017+ factor, 0.03, 0, 0, 0, 75)
+    ClearDrawOrigin()
+end
+
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     PlayerJob = QBCore.Functions.GetPlayerData().job
 
     if PlayerJob.name == "reporter" then
@@ -19,13 +31,11 @@ AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
     end
 end)
 
-RegisterNetEvent('QBCore:Client:OnPlayerUnload')
-AddEventHandler('QBCore:Client:OnPlayerUnload', function()
-    isLoggedIn = false
-end)
+--RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
+    --isLoggedIn = false
+--end)
 
-RegisterNetEvent('QBCore:Client:OnJobUpdate')
-AddEventHandler('QBCore:Client:OnJobUpdate', function(JobInfo)
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
     PlayerJob = JobInfo
 
     if PlayerJob.name == "reporter" then
@@ -44,7 +54,7 @@ end)
 Citizen.CreateThread(function()
     while true do 
         Citizen.Wait(1)
-        if isLoggedIn and QBCore ~= nil then
+        if LocalPlayer.state.isLoggedIn then
             local pos = GetEntityCoords(PlayerPedId())
             if PlayerJob.name == "reporter" then
                 if #(pos - vector3(Config.Locations["vehicle"].coords.x, Config.Locations["vehicle"].coords.y, Config.Locations["vehicle"].coords.z)) < 10.0 then
@@ -79,7 +89,7 @@ Citizen.CreateThread(function()
     while true do 
         Citizen.Wait(1)
         local inRange = false
-        if isLoggedIn and QBCore ~= nil then
+        if LocalPlayer.state.isLoggedIn then
             local pos = GetEntityCoords(PlayerPedId())
             if #(pos - vector3(Config.Locations["main"].coords.x, Config.Locations["main"].coords.y, Config.Locations["main"].coords.z)) < 1.5 or #(pos - vector3(Config.Locations["inside"].coords.x, Config.Locations["inside"].coords.y, Config.Locations["inside"].coords.z)) < 1.5 then
                 inRange = true
@@ -161,17 +171,4 @@ function closeMenuFull()
     ClearMenu()
 end
 
-function DrawText3D(x, y, z, text)
-	SetTextScale(0.35, 0.35)
-    SetTextFont(4)
-    SetTextProportional(1)
-    SetTextColour(255, 255, 255, 215)
-    SetTextEntry("STRING")
-    SetTextCentre(true)
-    AddTextComponentString(text)
-    SetDrawOrigin(x,y,z, 0)
-    DrawText(0.0, 0.0)
-    local factor = (string.len(text)) / 370
-    DrawRect(0.0, 0.0+0.0125, 0.017+ factor, 0.03, 0, 0, 0, 75)
-    ClearDrawOrigin()
-end
+
