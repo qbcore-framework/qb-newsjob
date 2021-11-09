@@ -52,7 +52,7 @@ RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
 end)
 
 Citizen.CreateThread(function()
-    while true do 
+    while true do
         Citizen.Wait(1)
         if LocalPlayer.state.isLoggedIn then
             local pos = GetEntityCoords(PlayerPedId())
@@ -74,7 +74,7 @@ Citizen.CreateThread(function()
                             end
                         end
                         Menu.renderGUI()
-                    end 
+                    end
                 end
             else
                 Citizen.Wait(2500)
@@ -86,7 +86,7 @@ Citizen.CreateThread(function()
 end)
 
 Citizen.CreateThread(function()
-    while true do 
+    while true do
         Citizen.Wait(1)
         local inRange = false
         if LocalPlayer.state.isLoggedIn then
@@ -100,12 +100,12 @@ Citizen.CreateThread(function()
                         while not IsScreenFadedOut() do
                             Citizen.Wait(10)
                         end
-    
+
                         SetEntityCoords(PlayerPedId(), Config.Locations["inside"].coords.x, Config.Locations["inside"].coords.y, Config.Locations["inside"].coords.z, 0, 0, 0, false)
                         SetEntityHeading(PlayerPedId(), Config.Locations["inside"].coords.w)
-    
+
                         Citizen.Wait(100)
-    
+
                         DoScreenFadeIn(1000)
                     end
                 elseif #(pos - vector3(Config.Locations["inside"].coords.x, Config.Locations["inside"].coords.y, Config.Locations["inside"].coords.z)) < 1.5 then
@@ -115,15 +115,15 @@ Citizen.CreateThread(function()
                         while not IsScreenFadedOut() do
                             Citizen.Wait(10)
                         end
-    
+
                         SetEntityCoords(PlayerPedId(), Config.Locations["outside"].coords.x, Config.Locations["outside"].coords.y, Config.Locations["outside"].coords.z, 0, 0, 0, false)
                         SetEntityHeading(PlayerPedId(), Config.Locations["outside"].coords.w)
-    
+
                         Citizen.Wait(100)
-    
+
                         DoScreenFadeIn(1000)
                     end
-                end 
+                end
             end
         end
         if not inRange then
@@ -137,7 +137,7 @@ function MenuGarage()
     MenuTitle = "Garage"
     ClearMenu()
     Menu.addButton("Vehicles", "VehicleList", nil)
-    Menu.addButton("Close Menu", "closeMenuFull", nil) 
+    Menu.addButton("Close Menu", "closeMenuFull", nil)
 end
 
 function VehicleList(isDown)
@@ -147,7 +147,7 @@ function VehicleList(isDown)
     for k, v in pairs(Config.Vehicles) do
         Menu.addButton(Config.Vehicles[k], "TakeOutVehicle", k, "Garage", " Motor: 100%", " Body: 100%", " Fuel: 100%")
     end
-        
+
     Menu.addButton("Back", "MenuGarage",nil)
 end
 
@@ -159,9 +159,9 @@ function TakeOutVehicle(vehicleInfo)
         exports['LegacyFuel']:SetFuel(veh, 100.0)
         closeMenuFull()
         TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
-        TriggerEvent("vehiclekeys:client:SetOwner", GetVehicleNumberPlateText(veh))
+        TriggerEvent("vehiclekeys:client:SetOwner", QBCore.Functions.GetPlate(veh))
         SetVehicleEngineOn(veh, true, true)
-        CurrentPlate = GetVehicleNumberPlateText(veh)
+        CurrentPlate = QBCore.Functions.GetPlate(veh)
     end, coords, true)
 end
 
