@@ -1,3 +1,4 @@
+QBCore = exports['qb-core']:GetCoreObject()
 PlayerJob = {}
 
 local function DrawText3D(x, y, z, text)
@@ -30,10 +31,6 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
         EndTextCommandSetBlipName(blip)
     end
 end)
-
---RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
-    --isLoggedIn = false
---end)
 
 RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
     PlayerJob = JobInfo
