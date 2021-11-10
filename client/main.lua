@@ -48,13 +48,109 @@ RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
     end
 end)
 
+function TakeOutVehicle(vehicleInfo)
+    local coords = Config.Locations["vehicle"].coords
+    QBCore.Functions.SpawnVehicle(vehicleInfo, function(veh)
+        SetVehicleNumberPlateText(veh, "WZNW"..tostring(math.random(1000, 9999)))
+        SetEntityHeading(veh, coords.w)
+        exports['LegacyFuel']:SetFuel(veh, 100.0)
+        TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
+        TriggerEvent("vehiclekeys:client:SetOwner", QBCore.Functions.GetPlate(veh))
+        SetVehicleEngineOn(veh, true, true)
+        SetVehicleLivery(veh, 2)
+        CurrentPlate = QBCore.Functions.GetPlate(veh)
+    end, coords, true)
+end
+
+function MenuGarage()
+    local vehicleMenu = {
+        {
+            header = "Weazel News Vehicles",
+            isMenuHeader = true
+        }
+    }
+
+    local Vehicles = Config.Vehicles[QBCore.Functions.GetPlayerData().job.grade.level]
+    for veh, label in pairs(Vehicles) do
+        vehicleMenu[#vehicleMenu+1] = {
+            header = label,
+            txt = "",
+            params = {
+                event = "qb-newsjob:client:TakeOutHelicopter",
+                args = {
+                    vehicle = veh
+                }
+            }
+        }
+    end
+    vehicleMenu[#vehicleMenu+1] = {
+        header = "⬅ Close Menu",
+        txt = "",
+        params = {
+            event = "qb-menu:client:closeMenu"
+        }
+
+    }
+    exports['qb-menu']:openMenu(vehicleMenu)
+end
+
+function TakeOutHelicopters(vehicleInfo)
+    local coords = Config.Locations["heli"].coords
+    QBCore.Functions.SpawnVehicle(vehicleInfo, function(veh)
+        SetVehicleNumberPlateText(veh, "WZNW"..tostring(math.random(1000, 9999)))
+        SetEntityHeading(veh, coords.w)
+        exports['LegacyFuel']:SetFuel(veh, 100.0)
+        TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
+        TriggerEvent("vehiclekeys:client:SetOwner", QBCore.Functions.GetPlate(veh))
+        SetVehicleEngineOn(veh, true, true)
+        SetVehicleLivery(veh, 2)
+        CurrentPlate = QBCore.Functions.GetPlate(veh)
+    end, coords, true)
+end
+
+function MenuHeliGarage()
+    local vehicleMenu = {
+        {
+            header = "Weazel News Helicopters",
+            isMenuHeader = true
+        }
+    }
+
+    local Helicopters = Config.Helicopters[QBCore.Functions.GetPlayerData().job.grade.level]
+    for veh, label in pairs(Helicopters) do
+        vehicleMenu[#vehicleMenu+1] = {
+            header = label,
+            txt = "",
+            params = {
+                event = "qb-newsjob:client:TakeOutHelicopters",
+                args = {
+                    vehicle = veh
+                }
+            }
+        }
+    end
+    vehicleMenu[#vehicleMenu+1] = {
+        header = "⬅ Close Menu",
+        txt = "",
+        params = {
+            event = "qb-menu:client:closeMenu"
+        }
+
+    }
+    exports['qb-menu']:openMenu(vehicleMenu)
+end
+
+
+
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(1)
+        Citizen.Wait(3)
         if LocalPlayer.state.isLoggedIn then
+            local inRange = false
             local pos = GetEntityCoords(PlayerPedId())
             if PlayerJob.name == "reporter" then
                 if #(pos - vector3(Config.Locations["vehicle"].coords.x, Config.Locations["vehicle"].coords.y, Config.Locations["vehicle"].coords.z)) < 10.0 then
+                    inRange = true
                     DrawMarker(2, Config.Locations["vehicle"].coords.x, Config.Locations["vehicle"].coords.y, Config.Locations["vehicle"].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 200, 200, 200, 222, false, false, false, true, false, false, false)
                     if #(pos - vector3(Config.Locations["vehicle"].coords.x, Config.Locations["vehicle"].coords.y, Config.Locations["vehicle"].coords.z)) < 1.5 then
                         if IsPedInAnyVehicle(PlayerPedId(), false) then
@@ -67,11 +163,31 @@ Citizen.CreateThread(function()
                                 DeleteVehicle(GetVehiclePedIsIn(PlayerPedId()))
                             else
                                 MenuGarage()
-                                Menu.hidden = not Menu.hidden
+                                currentGarage = k
                             end
                         end
-                        Menu.renderGUI()
                     end
+                elseif  #(pos - vector3(Config.Locations["heli"].coords.x, Config.Locations["heli"].coords.y, Config.Locations["heli"].coords.z)) < 5.0 then
+                    inRange = true
+                    DrawMarker(2, Config.Locations["heli"].coords.x, Config.Locations["heli"].coords.y, Config.Locations["heli"].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 200, 200, 200, 222, false, false, false, true, false, false, false)
+                    if #(pos - vector3(Config.Locations["heli"].coords.x, Config.Locations["heli"].coords.y, Config.Locations["heli"].coords.z)) < 1.5 then
+                        if IsPedInAnyVehicle(PlayerPedId(), false) then
+                            DrawText3D(Config.Locations["heli"].coords.x, Config.Locations["heli"].coords.y, Config.Locations["heli"].coords.z, "~g~E~w~ - Store the Helicopters")
+                        else
+                            DrawText3D(Config.Locations["heli"].coords.x, Config.Locations["heli"].coords.y, Config.Locations["heli"].coords.z, "~g~E~w~ - Helicopters")
+                        end
+                        if IsControlJustReleased(0, 38) then
+                            if IsPedInAnyVehicle(PlayerPedId(), false) then
+                                DeleteVehicle(GetVehiclePedIsIn(PlayerPedId()))
+                            else
+                                MenuHeliGarage()
+                                currentGarage = k
+                            end
+                        end
+                    end
+                end
+                if not inRange then
+                    Citizen.Wait(2500)
                 end
             else
                 Citizen.Wait(2500)
@@ -129,43 +245,14 @@ Citizen.CreateThread(function()
     end
 end)
 
-function MenuGarage()
-    ped = PlayerPedId();
-    MenuTitle = "Garage"
-    ClearMenu()
-    Menu.addButton("Vehicles", "VehicleList", nil)
-    Menu.addButton("Close Menu", "closeMenuFull", nil)
-end
+RegisterNetEvent('qb-newsjob:client:TakeOutVehicle', function(data)
+    local vehicle = data.vehicle
+    TakeOutVehicle(vehicle)
+end)
 
-function VehicleList(isDown)
-    ped = PlayerPedId();
-    MenuTitle = "Vehicles:"
-    ClearMenu()
-    for k, v in pairs(Config.Vehicles) do
-        Menu.addButton(Config.Vehicles[k], "TakeOutVehicle", k, "Garage", " Motor: 100%", " Body: 100%", " Fuel: 100%")
-    end
-
-    Menu.addButton("Back", "MenuGarage",nil)
-end
-
-function TakeOutVehicle(vehicleInfo)
-    local coords = Config.Locations["vehicle"].coords
-    QBCore.Functions.SpawnVehicle(vehicleInfo, function(veh)
-        SetVehicleNumberPlateText(veh, "TOWR"..tostring(math.random(1000, 9999)))
-        SetEntityHeading(veh, coords.w)
-        exports['LegacyFuel']:SetFuel(veh, 100.0)
-        closeMenuFull()
-        TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
-        TriggerEvent("vehiclekeys:client:SetOwner", QBCore.Functions.GetPlate(veh))
-        SetVehicleEngineOn(veh, true, true)
-        CurrentPlate = QBCore.Functions.GetPlate(veh)
-    end, coords, true)
-end
-
-function closeMenuFull()
-    Menu.hidden = true
-    currentGarage = nil
-    ClearMenu()
-end
+RegisterNetEvent('qb-newsjob:client:TakeOutHelicopters', function(data)
+    local vehicle = data.vehicle
+    TakeOutHelicopters(vehicle)
+end)
 
 
