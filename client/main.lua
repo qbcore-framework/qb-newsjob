@@ -76,7 +76,7 @@ function MenuGarage()
             header = label,
             txt = "",
             params = {
-                event = "qb-newsjob:client:TakeOutHelicopter",
+                event = "qb-newsjob:client:TakeOutVehicle",
                 args = {
                     vehicle = veh
                 }

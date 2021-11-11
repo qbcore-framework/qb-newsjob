@@ -252,8 +252,8 @@ Citizen.CreateThread(function()
 						end
 						camHeading = (camHeading + 180.0) / 360.0
 						
-						SetTaskMoveNetworkSignalFloat ( PlayerPedId(), "Pitch", camPitch)
-						SetTaskMoveNetworkSignalFloat ( PlayerPedId(), "Heading", camHeading * -1.0 + 1.0)
+						SetTaskMoveNetworkSignalFloat( PlayerPedId(), "Pitch", camPitch)
+						SetTaskMoveNetworkSignalFloat( PlayerPedId(), "Heading", camHeading * -1.0 + 1.0)
 						
 						Citizen.Wait(1)
 					end
@@ -353,8 +353,8 @@ Citizen.CreateThread(function()
 						end
 						camHeading = (camHeading + 180.0) / 360.0
 							
-						SetTaskMoveNetworkSignalFloat (PlayerPedId(), "Pitch", camPitch)
-						SetTaskMoveNetworkSignalFloat (PlayerPedId(), "Heading", camHeading * -1.0 + 1.0)
+						SetTaskMoveNetworkSignalFloat(PlayerPedId(), "Pitch", camPitch)
+						SetTaskMoveNetworkSignalFloat(PlayerPedId(), "Heading", camHeading * -1.0 + 1.0)
 						
 						Citizen.Wait(1)
 					end
