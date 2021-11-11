@@ -16,7 +16,7 @@ local bmicanimName = "mcs2_crew_idle_m_boom"
 local bmic_net = nil
 local mic_net = nil
 local cam_net = nil
-local UI = { 
+local UI = {
 	x =  0.000 ,
 	y = -0.001 ,
 }
@@ -129,7 +129,7 @@ RegisterNetEvent("Cam:ToggleCam", function()
         while not HasModelLoaded(GetHashKey(camModel)) do
             Citizen.Wait(100)
         end
-		
+
         local plyCoords = GetOffsetFromEntityInWorldCoords(GetPlayerPed(PlayerId()), 0.0, 0.0, -5.0)
         local camspawned = CreateObject(GetHashKey(camModel), plyCoords.x, plyCoords.y, plyCoords.z, 1, 1, 1)
         Citizen.Wait(1000)
@@ -166,7 +166,7 @@ Citizen.CreateThread(function()
 					TaskPlayAnim(GetPlayerPed(PlayerId()), 1.0, -1, -1, 50, 0, 0, 0, 0) -- 50 = 32 + 16 + 2
 					TaskPlayAnim(GetPlayerPed(PlayerId()), camanimDict, camanimName, 1.0, -1, -1, 50, 0, 0, 0, 0)
 				end
-					
+
 				DisablePlayerFiring(PlayerId(), true)
 				DisableControlAction(0,25,true) -- disable aim
 				DisableControlAction(0, 44,  true) -- INPUT_COVER
@@ -199,7 +199,7 @@ Citizen.CreateThread(function()
 					SetTimecycleModifier("default")
 
 					SetTimecycleModifierStrength(0.3)
-					
+
 					local scaleform = RequestScaleformMovie("security_camera")
 
 					while not HasScaleformMovieLoaded(scaleform) do
@@ -223,7 +223,7 @@ Citizen.CreateThread(function()
 							PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", false)
 							movcamera = false
 						end
-						
+
 						SetEntityRotation(lPed, 0, 0, new_z,2, true)
 
 						local zoomvalue = (1.0/(fov_max-fov_min))*(fov-fov_min)
@@ -235,7 +235,7 @@ Citizen.CreateThread(function()
 						drawRct(UI.x + 0.0, 	UI.y + 0.0, 1.0,0.15,0,0,0,255) -- Top Bar
 						DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
 						drawRct(UI.x + 0.0, 	UI.y + 0.85, 1.0,0.16,0,0,0,255) -- Bottom Bar
-						
+
 						local camHeading = GetGameplayCamRelativeHeading()
 						local camPitch = GetGameplayCamRelativePitch()
 						if camPitch < -70.0 then
@@ -244,17 +244,17 @@ Citizen.CreateThread(function()
 							camPitch = 42.0
 						end
 						camPitch = (camPitch + 70.0) / 112.0
-						
+
 						if camHeading < -180.0 then
 							camHeading = -180.0
 						elseif camHeading > 180.0 then
 							camHeading = 180.0
 						end
 						camHeading = (camHeading + 180.0) / 360.0
-						
-						SetTaskMoveNetworkSignalFloat ( PlayerPedId(), "Pitch", camPitch)
-						SetTaskMoveNetworkSignalFloat ( PlayerPedId(), "Heading", camHeading * -1.0 + 1.0)
-						
+
+						SetTaskMoveNetworkSignalFloat(PlayerPedId(), "Pitch", camPitch)
+						SetTaskMoveNetworkSignalFloat(PlayerPedId(), "Heading", camHeading * -1.0 + 1.0)
+
 						Citizen.Wait(1)
 					end
 					movcamera = false
@@ -265,7 +265,7 @@ Citizen.CreateThread(function()
 					DestroyCam(cam1, false)
 					SetNightvision(false)
 					SetSeethrough(false)
-					
+
 				end
 				Citizen.Wait(7)
 			else
@@ -294,7 +294,7 @@ Citizen.CreateThread(function()
 					SetTimecycleModifier("default")
 
 					SetTimecycleModifierStrength(0.3)
-					
+
 					local scaleform = RequestScaleformMovie("security_camera")
 					local scaleform2 = RequestScaleformMovie("breaking_news")
 
@@ -326,7 +326,7 @@ Citizen.CreateThread(function()
 						end
 
 						SetEntityRotation(lPed, 0, 0, new_z,2, true)
-							
+
 						local zoomvalue = (1.0/(fov_max-fov_min))*(fov-fov_min)
 						CheckInputRotation(cam2, zoomvalue)
 
@@ -336,7 +336,7 @@ Citizen.CreateThread(function()
 						DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
 						DrawScaleformMovie(scaleform2, 0.5, 0.63, 1.0, 1.0, 255, 255, 255, 255)
 						Breaking("BREAKING NEWS")
-						
+
 						local camHeading = GetGameplayCamRelativeHeading()
 						local camPitch = GetGameplayCamRelativePitch()
 						if camPitch < -70.0 then
@@ -345,17 +345,17 @@ Citizen.CreateThread(function()
 							camPitch = 42.0
 						end
 						camPitch = (camPitch + 70.0) / 112.0
-						
+
 						if camHeading < -180.0 then
 							camHeading = -180.0
 						elseif camHeading > 180.0 then
 							camHeading = 180.0
 						end
 						camHeading = (camHeading + 180.0) / 360.0
-							
-						SetTaskMoveNetworkSignalFloat (PlayerPedId(), "Pitch", camPitch)
-						SetTaskMoveNetworkSignalFloat (PlayerPedId(), "Heading", camHeading * -1.0 + 1.0)
-						
+
+						SetTaskMoveNetworkSignalFloat(PlayerPedId(), "Pitch", camPitch)
+						SetTaskMoveNetworkSignalFloat(PlayerPedId(), "Heading", camHeading * -1.0 + 1.0)
+
 						Citizen.Wait(1)
 					end
 
@@ -467,7 +467,7 @@ RegisterNetEvent("Mic:ToggleMic", function()
         while not HasModelLoaded(GetHashKey(micModel)) do
             Citizen.Wait(100)
         end
-		
+
 		while not HasAnimDictLoaded(micanimDict) do
 			RequestAnimDict(micanimDict)
 			Citizen.Wait(100)
