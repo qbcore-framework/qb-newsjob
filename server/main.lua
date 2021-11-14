@@ -13,6 +13,7 @@ QBCore.Commands.Add("newsmic", "Grab a news microphone", {}, false, function(sou
         TriggerClientEvent("Mic:ToggleMic", source)
     end
 end)
+
 QBCore.Commands.Add("newsbmic", "Grab a Boom microphone", {}, false, function(source, args)
     local Player = QBCore.Functions.GetPlayer(source)
     if Player.PlayerData.job.name == "reporter" then
