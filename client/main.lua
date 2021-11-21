@@ -18,7 +18,6 @@ end
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     PlayerJob = QBCore.Functions.GetPlayerData().job
-
     if PlayerJob.name == "reporter" then
         local blip = AddBlipForCoord(Config.Locations["vehicle"].coords.x, Config.Locations["vehicle"].coords.y, Config.Locations["vehicle"].coords.z)
         SetBlipSprite(blip, 225)
@@ -34,7 +33,6 @@ end)
 
 RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
     PlayerJob = JobInfo
-
     if PlayerJob.name == "reporter" then
         local blip = AddBlipForCoord(Config.Locations["vehicle"].coords.x, Config.Locations["vehicle"].coords.y, Config.Locations["vehicle"].coords.z)
         SetBlipSprite(blip, 225)
@@ -140,11 +138,9 @@ function MenuHeliGarage()
     exports['qb-menu']:openMenu(vehicleMenu)
 end
 
-
-
-Citizen.CreateThread(function()
+CreateThread(function()
     while true do
-        Citizen.Wait(3)
+        Wait(3)
         if LocalPlayer.state.isLoggedIn then
             local inRange = false
             local pos = GetEntityCoords(PlayerPedId())
@@ -187,20 +183,20 @@ Citizen.CreateThread(function()
                     end
                 end
                 if not inRange then
-                    Citizen.Wait(2500)
+                    Wait(2500)
                 end
             else
-                Citizen.Wait(2500)
+                Wait(2500)
             end
         else
-            Citizen.Wait(2500)
+            Wait(2500)
         end
     end
 end)
 
-Citizen.CreateThread(function()
+CreateThread(function()
     while true do
-        Citizen.Wait(1)
+        Wait(1)
         local inRange = false
         if LocalPlayer.state.isLoggedIn then
             local pos = GetEntityCoords(PlayerPedId())
@@ -211,13 +207,13 @@ Citizen.CreateThread(function()
                     if IsControlJustReleased(0, 38) then
                         DoScreenFadeOut(500)
                         while not IsScreenFadedOut() do
-                            Citizen.Wait(10)
+                            Wait(10)
                         end
 
                         SetEntityCoords(PlayerPedId(), Config.Locations["inside"].coords.x, Config.Locations["inside"].coords.y, Config.Locations["inside"].coords.z, 0, 0, 0, false)
                         SetEntityHeading(PlayerPedId(), Config.Locations["inside"].coords.w)
 
-                        Citizen.Wait(100)
+                        Wait(100)
 
                         DoScreenFadeIn(1000)
                     end
@@ -226,13 +222,13 @@ Citizen.CreateThread(function()
                     if IsControlJustReleased(0, 38) then
                         DoScreenFadeOut(500)
                         while not IsScreenFadedOut() do
-                            Citizen.Wait(10)
+                            Wait(10)
                         end
 
                         SetEntityCoords(PlayerPedId(), Config.Locations["outside"].coords.x, Config.Locations["outside"].coords.y, Config.Locations["outside"].coords.z, 0, 0, 0, false)
                         SetEntityHeading(PlayerPedId(), Config.Locations["outside"].coords.w)
 
-                        Citizen.Wait(100)
+                        Wait(100)
 
                         DoScreenFadeIn(1000)
                     end
@@ -240,7 +236,7 @@ Citizen.CreateThread(function()
             end
         end
         if not inRange then
-            Citizen.Wait(2500)
+            Wait(2500)
         end
     end
 end)
@@ -254,5 +250,3 @@ RegisterNetEvent('qb-newsjob:client:TakeOutHelicopters', function(data)
     local vehicle = data.vehicle
     TakeOutHelicopters(vehicle)
 end)
-
-
