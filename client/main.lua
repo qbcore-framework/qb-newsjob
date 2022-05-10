@@ -159,7 +159,6 @@ CreateThread(function()
                                 DeleteVehicle(GetVehiclePedIsIn(PlayerPedId()))
                             else
                                 MenuGarage()
-                                currentGarage = k
                             end
                         end
                     end
@@ -177,7 +176,6 @@ CreateThread(function()
                                 DeleteVehicle(GetVehiclePedIsIn(PlayerPedId()))
                             else
                                 MenuHeliGarage()
-                                currentGarage = k
                             end
                         end
                     end

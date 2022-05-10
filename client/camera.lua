@@ -1,9 +1,6 @@
 local holdingCam = false
-local usingCam = false
 local holdingMic = false
-local usingMic = false
 local holdingBmic = false
-local usingBmic = false
 local camModel = "prop_v_cam_01"
 local camanimDict = "missfinale_c2mcs_1"
 local camanimName = "fin_c2_mcs_1_camman"
@@ -27,6 +24,9 @@ local speed_lr = 8.0
 local speed_ud = 8.0
 local camera = false
 local fov = (fov_max+fov_min)*0.5
+local new_z
+local movcamera
+local newscamera
 
 
 --FUNCTIONS--
@@ -55,7 +55,7 @@ local function CheckInputRotation(cam, zoomvalue)
 	local rotation = GetCamRot(cam, 2)
 	if rightAxisX ~= 0.0 or rightAxisY ~= 0.0 then
 		new_z = rotation.z + rightAxisX*-1.0*(speed_ud)*(zoomvalue+0.1)
-		new_x = math.max(math.min(20.0, rotation.x + rightAxisY*-1.0*(speed_lr)*(zoomvalue+0.1)), -89.5)
+		local new_x = math.max(math.min(20.0, rotation.x + rightAxisY*-1.0*(speed_lr)*(zoomvalue+0.1)), -89.5)
 		SetCamRot(cam, new_x, 0.0, new_z, 2)
 	end
 end
@@ -143,7 +143,6 @@ RegisterNetEvent("Cam:ToggleCam", function()
         DeleteEntity(NetToObj(cam_net))
         cam_net = nil
         holdingCam = false
-        usingCam = false
     end
 end)
 
@@ -182,8 +181,6 @@ end)
 
 CreateThread(function()
 	while true do
-		local lPed = PlayerPedId()
-		local vehicle = GetVehiclePedIsIn(lPed)
 		if PlayerJob.name == "reporter" then
 			if holdingCam then
 				if IsControlJustReleased(1, 244) then
@@ -263,9 +260,6 @@ end)
 
 CreateThread(function()
 	while true do
-		local lPed = PlayerPedId()
-		local vehicle = GetVehiclePedIsIn(lPed)
-
 		if PlayerJob.name == "reporter" then
 			if holdingCam then
 				if IsControlJustReleased(1, 38) then
@@ -368,7 +362,6 @@ RegisterNetEvent("Mic:ToggleBMic", function()
         DeleteEntity(NetToObj(bmic_net))
         bmic_net = nil
         holdingBmic = false
-        usingBmic = false
     end
 end)
 
@@ -389,13 +382,12 @@ CreateThread(function()
 				DisableControlAction(0, 44,  true) -- INPUT_COVER
 				DisableControlAction(0,37,true) -- INPUT_SELECT_WEAPON
 				SetCurrentPedWeapon(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), true)
-				if IsPedInAnyVehicle(PlayerPedId(), false) or IsHandcuffed or holdingMic then
+				if IsPedInAnyVehicle(PlayerPedId(), false) or QBCore.Functions.GetPlayerData().metadata["ishandcuffed"] or holdingMic then
 					ClearPedSecondaryTask(PlayerPedId())
 					DetachEntity(NetToObj(bmic_net), 1, 1)
 					DeleteEntity(NetToObj(bmic_net))
 					bmic_net = nil
 					holdingBmic = false
-					usingBmic = false
 				end
 				Wait(7)
 			else
@@ -448,6 +440,5 @@ RegisterNetEvent("Mic:ToggleMic", function()
         DeleteEntity(NetToObj(mic_net))
         mic_net = nil
         holdingMic = false
-        usingMic = false
     end
 end)
