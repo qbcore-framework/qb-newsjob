@@ -136,7 +136,7 @@ RegisterNetEvent("Cam:ToggleCam", function()
         TaskPlayAnim(GetPlayerPed(PlayerId()), camanimDict, camanimName, 1.0, -1, -1, 50, 0, 0, 0, 0)
         cam_net = netid
         holdingCam = true
-		DisplayNotification("Weazle Overlay ~INPUT_PICKUP~ \nFilm Overlay: ~INPUT_INTERACTION_MENU~")
+		DisplayNotification(Lang:t("text.weazle_overlay"))
     else
         ClearPedSecondaryTask(GetPlayerPed(PlayerId()))
         DetachEntity(NetToObj(cam_net), 1, 1)
@@ -296,7 +296,7 @@ CreateThread(function()
 						HideHUDThisFrame()
 						DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
 						DrawScaleformMovie(scaleform2, 0.5, 0.63, 1.0, 1.0, 255, 255, 255, 255)
-						Breaking("BREAKING NEWS")
+						Breaking(Lang:t("text.breaking_news"))
 						local camHeading = GetGameplayCamRelativeHeading()
 						local camPitch = GetGameplayCamRelativePitch()
 						if camPitch < -70.0 then
