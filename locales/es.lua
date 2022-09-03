@@ -1,4 +1,4 @@
-local Translations = {   
+local Translations = {
     text = {
         weazle_overlay = "Transmitir noticia en vivo ~INPUT_PICKUP~ \nGrabar noticia: ~INPUT_INTERACTION_MENU~",
         weazel_news_vehicles = "Vehículos Weazel News",
@@ -11,7 +11,7 @@ local Translations = {
         enter = "~g~E~w~ - Entrar",
         go_outside = "~g~E~w~ - Salir",
         breaking_news= "¡NOTICIA DE ULTIMA HORA!"
-    },    
+    },
 }
 
 Lang = Locale:new({
