@@ -10,7 +10,7 @@ local Translations = {
         helicopters = "~g~E~w~ - Hélicoptères",
         enter = "~g~E~w~ - Entrer",
         go_outside = "~g~E~w~ - Sortir",
-        breaking_news= "BREAKING NEWS"
+        breaking_news = "BREAKING NEWS"
     }
 }
 
