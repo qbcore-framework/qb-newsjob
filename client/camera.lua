@@ -265,6 +265,10 @@ CreateThread(function()
 					local lPed = PlayerPedId()
 					local vehicle = GetVehiclePedIsIn(lPed)
 					local cam2 = CreateCam("DEFAULT_SCRIPTED_FLY_CAMERA", true)
+					local msg = Lang:t("text.breaking_news")
+					local title = Lang:t("text.title_breaking_news")
+					local bottom = Lang:t("text.bottom_breaking_news")
+
 					AttachCamToEntity(cam2, lPed, 0.0, 0.0, 1.0, true)
 					SetCamRot(cam2, 2.0, 1.0, GetEntityHeading(lPed))
 					SetCamFov(cam2, fov)
@@ -272,6 +276,24 @@ CreateThread(function()
 					PushScaleformMovieFunction(scaleform, "SET_CAM_LOGO")
 					PushScaleformMovieFunction(scaleform2, "breaking_news")
 					PopScaleformMovieFunctionVoid()
+
+					BeginScaleformMovieMethod(scaleform2, 'SET_TEXT')
+					PushScaleformMovieMethodParameterString(msg)
+					PushScaleformMovieMethodParameterString(bottom)
+					EndScaleformMovieMethod()
+
+					BeginScaleformMovieMethod(scaleform2, 'SET_SCROLL_TEXT')
+					PushScaleformMovieMethodParameterInt(0) -- top ticker
+					PushScaleformMovieMethodParameterInt(0) -- Since this is the first string, start at 0
+					PushScaleformMovieMethodParameterString(title)
+
+					EndScaleformMovieMethod()
+
+					BeginScaleformMovieMethod(scaleform2, 'DISPLAY_SCROLL_TEXT')
+					PushScaleformMovieMethodParameterInt(0) -- Top ticker
+					PushScaleformMovieMethodParameterInt(0) -- Index of string
+
+					EndScaleformMovieMethod()
 					while newscamera and not IsEntityDead(lPed) and (GetVehiclePedIsIn(lPed) == vehicle) and true do
 						if IsControlJustPressed(1, 177) then
 							PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", false)
@@ -284,28 +306,6 @@ CreateThread(function()
 						HideHUDThisFrame()
 						DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
 						DrawScaleformMovie(scaleform2, 0.5, 0.63, 1.0, 1.0, 255, 255, 255, 255)
-
-						local msg = Breaking(Lang:t("text.breaking_news"))
-						local title = Breaking(Lang:t("text.title_breaking_news"))
-						local bottom = Breaking(Lang:t("text.bottom.breaking_news"))
-
-						BeginScaleformMovieMethod(scaleform2, 'SET_TEXT')
-						PushScaleformMovieMethodParameterString(msg)
-						PushScaleformMovieMethodParameterString(bottom)
-						EndScaleformMovieMethod()
-
-						BeginScaleformMovieMethod(scaleform2, 'SET_SCROLL_TEXT')
-						PushScaleformMovieMethodParameterInt(0) -- top ticker
-						PushScaleformMovieMethodParameterInt(0) -- Since this is the first string, start at 0
-						PushScaleformMovieMethodParameterString(title)
-
-						EndScaleformMovieMethod()
-
-						BeginScaleformMovieMethod(scaleform2, 'DISPLAY_SCROLL_TEXT')
-						PushScaleformMovieMethodParameterInt(0) -- Top ticker
-						PushScaleformMovieMethodParameterInt(0) -- Index of string
-
-						EndScaleformMovieMethod()
 
 						local camHeading = GetGameplayCamRelativeHeading()
 						local camPitch = GetGameplayCamRelativePitch()
