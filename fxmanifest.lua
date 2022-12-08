@@ -2,7 +2,7 @@ fx_version 'cerulean'
 game 'gta5'
 
 description 'QB-NewsJob'
-version '1.0.1'
+version '1.2.0'
 
 shared_scripts {
     'config.lua',
