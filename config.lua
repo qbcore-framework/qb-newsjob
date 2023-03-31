@@ -1,5 +1,7 @@
 Config = {}
 
+Config.UseableItems = true -- Set to false if you want to use commands instead of usable items
+
 Config.Locations = {
     ["main"] = {
         label = "Weazle News HQ",
