@@ -4,23 +4,17 @@ if Config.UseableItems == true then
 
     QBCore.Functions.CreateUseableItem("newscam", function(source, item)
         local Player = QBCore.Functions.GetPlayer(source)
-        if Player.PlayerData.job.name == "reporter" then
-            TriggerClientEvent("Cam:ToggleCam", source)
-        end
+        TriggerClientEvent("Cam:ToggleCam", source)  
     end)
 
     QBCore.Functions.CreateUseableItem("newsmic", function(source, item)
         local Player = QBCore.Functions.GetPlayer(source)
-        if Player.PlayerData.job.name == "reporter" then
-            TriggerClientEvent("Mic:ToggleMic", source)
-        end
+        TriggerClientEvent("Mic:ToggleMic", source)
     end)
 
     QBCore.Functions.CreateUseableItem("newsbmic", function(source, item)
         local Player = QBCore.Functions.GetPlayer(source)
-        if Player.PlayerData.job.name == "reporter" then
-            TriggerClientEvent("Mic:ToggleBMic", source)
-        end
+        TriggerClientEvent("Mic:ToggleBMic", source)
     end)
 
     else
