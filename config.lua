@@ -72,3 +72,27 @@ Config.Helicopters = {
 		["frogger"] = "Frogger",
 	}
 }
+
+Config.VehicleItems = {
+	[1] = {
+		name = "newscam",
+		amount = 1,
+		info = {},
+		type = "item",
+		slot = 1,
+	},
+	[2] = {
+		name = "newsmic",
+		amount = 1,
+		info = {},
+		type = "item",
+		slot = 2,
+	},
+	[3] = {
+		name = "newsbmic",
+		amount = 1,
+		info = {},
+		type = "item",
+		slot = 3,
+	},
+}
