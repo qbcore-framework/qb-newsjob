@@ -1,43 +1,34 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
-if Config.UseableItems == true then
+if Config.UseableItems then
 
     QBCore.Functions.CreateUseableItem("newscam", function(source, item)
-        local Player = QBCore.Functions.GetPlayer(source)
         TriggerClientEvent("Cam:ToggleCam", source)  
     end)
 
     QBCore.Functions.CreateUseableItem("newsmic", function(source, item)
-        local Player = QBCore.Functions.GetPlayer(source)
         TriggerClientEvent("Mic:ToggleMic", source)
     end)
 
     QBCore.Functions.CreateUseableItem("newsbmic", function(source, item)
-        local Player = QBCore.Functions.GetPlayer(source)
         TriggerClientEvent("Mic:ToggleBMic", source)
     end)
 
-    else
+else
 
+    local Player = QBCore.Functions.GetPlayer(source)
     QBCore.Commands.Add("newscam", "Grab a news camera", {}, false, function(source, _)
-        local Player = QBCore.Functions.GetPlayer(source)
-        if Player.PlayerData.job.name == "reporter" then
-            TriggerClientEvent("Cam:ToggleCam", source)
-        end
+        if Player.PlayerData.job.name ~= "reporter" then return end
+        TriggerClientEvent("Cam:ToggleCam", source)
     end)
 
     QBCore.Commands.Add("newsmic", "Grab a news microphone", {}, false, function(source, _)
-        local Player = QBCore.Functions.GetPlayer(source)
-        if Player.PlayerData.job.name == "reporter" then
-            TriggerClientEvent("Mic:ToggleMic", source)
-        end
+        if Player.PlayerData.job.name ~= "reporter" then return end
+        TriggerClientEvent("Mic:ToggleMic", source)
     end)
 
     QBCore.Commands.Add("newsbmic", "Grab a Boom microphone", {}, false, function(source, _)
-        local Player = QBCore.Functions.GetPlayer(source)
-        if Player.PlayerData.job.name == "reporter" then
-            TriggerClientEvent("Mic:ToggleBMic", source)
-        end
+        if Player.PlayerData.job.name ~= "reporter" then return end
+        TriggerClientEvent("Mic:ToggleBMic", source)
     end)
-    
 end
