@@ -2,15 +2,15 @@ local QBCore = exports['qb-core']:GetCoreObject()
 
 if Config.UseableItems then
 
-    QBCore.Functions.CreateUseableItem("newscam", function(source, item)
-        TriggerClientEvent("Cam:ToggleCam", source)  
+    QBCore.Functions.CreateUseableItem("newscam", function(source)
+        TriggerClientEvent("Cam:ToggleCam", source)
     end)
 
-    QBCore.Functions.CreateUseableItem("newsmic", function(source, item)
+    QBCore.Functions.CreateUseableItem("newsmic", function(source)
         TriggerClientEvent("Mic:ToggleMic", source)
     end)
 
-    QBCore.Functions.CreateUseableItem("newsbmic", function(source, item)
+    QBCore.Functions.CreateUseableItem("newsbmic", function(source)
         TriggerClientEvent("Mic:ToggleBMic", source)
     end)
 
