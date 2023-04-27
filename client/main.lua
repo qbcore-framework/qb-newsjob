@@ -57,7 +57,8 @@ function TakeOutVehicle(vehicleInfo)
         TriggerEvent("vehiclekeys:client:SetOwner", QBCore.Functions.GetPlate(veh))
         SetVehicleEngineOn(veh, true, true)
         SetVehicleLivery(veh, 2)
-        CurrentPlate = QBCore.Functions.GetPlate(veh)
+            if not Config.UseableItems then return end
+        TriggerServerEvent("inventory:server:addTrunkItems", QBCore.Functions.GetPlate(veh), Config.VehicleItems)
     end, vehicleInfo, coords, true)
 end
 
