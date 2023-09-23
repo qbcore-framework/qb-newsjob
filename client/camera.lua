@@ -96,7 +96,7 @@ end
 
 local function DisplayNotification(string)
 	SetTextComponentFormat("STRING")
-	AddTextComponentString(string)
+	AddTextComponentSubstringPlayerName(string)
 	DisplayHelpTextFromStringLabel(0, 0, 1, -1)
 end
 
