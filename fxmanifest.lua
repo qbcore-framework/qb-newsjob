@@ -1,7 +1,8 @@
 fx_version 'cerulean'
 game 'gta5'
-
-description 'QB-NewsJob'
+lua54 'yes'
+author 'Kakarot'
+description 'Allows players to play as a news reporter and access the equipment for it'
 version '1.3.0'
 
 shared_scripts {
@@ -17,5 +18,3 @@ client_scripts {
 }
 
 server_script 'server/main.lua'
-
-lua54 'yes'
